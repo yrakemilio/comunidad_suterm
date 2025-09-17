@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Comunidad SUTERM</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="wrap">
+  <h1>Comunidad SUTERM</h1>
+  <p> Si tienes un negocio o servicio,compartelo, le puede interesar a alguno de tus compañeros </p>
+
+  <!-- Controles (se ocultan automáticamente en la ficha) -->
+  <div class="controls">
+    <input id="q" placeholder="🔎 Buscar (Nombre o Descripción)">
+    <select id="fSeccion"><option value="">Sección</option></select>
+    <select id="fCiudad"><option value="">Ciudad</option></select>
+    <select id="fCategoria"><option value="">Categoría</option></select>
+  </div>
+
+  <!-- Listado o Ficha -->
+  <div id="grid"></div>
+</div>
+
+<!-- PapaParse (lector CSV) -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>
