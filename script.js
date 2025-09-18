@@ -1,16 +1,15 @@
 // =====================
-// VERSION + CONFIG
+// CONFIG
 // =====================
-const APP_VERSION = "empty-v9"; // se muestra en pantalla para verificar carga
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTBAuMdD25rU-PCyLnn_6nOeb_NHRQtOHglGFL2QqMN7BD98JmWvJ1O2o6LkOjhwP0KCxYzTY_V3u9R/pub?gid=0&single=true&output=csv";
 
-// Arrancar SIEMPRE vacío
+// Arrancar vacío
 const START_EMPTY = true;
 
 let DATA = [];
 
-// utilidades
-const $ = (s) => document.querySelector(s);
+// Helpers
+const $ = (s)=>document.querySelector(s);
 const unique = (a)=>[...new Set(a.filter(Boolean))].sort();
 function norm(row){
   const out = {};
@@ -21,15 +20,12 @@ function norm(row){
   return out;
 }
 
-// imagen de tarjeta (prioridad: sheet -> carpeta/Id -> placeholder)
 function pickLogo(it){
   const fromSheet = it.Logo1 || it.Logo || it.logo;
   if (fromSheet) return fromSheet;
   if (it.Id) return `imagenes/${it.Id}/logo.png`;
   return "https://via.placeholder.com/600x400?text=Sin+imagen";
 }
-
-// galería: logo + Imagen1..3; si faltan, intenta /imagenes/{Id}/imagenX.jpg
 function pickImages(it){
   const id = it.Id || "";
   const imgs = [];
@@ -46,37 +42,25 @@ function pickImages(it){
   return [...new Set(imgs)];
 }
 
-// =====================
-// CARGA CSV
-// =====================
+// Cargar CSV
 function loadData(){
-  // muestra versión para confirmar que cargó este JS
-  const dbg = $("#debug");
-  if (dbg) dbg.textContent = `Versión: ${APP_VERSION} — cargando base…`;
-
   Papa.parse(CSV_URL, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: ({data})=>{
       DATA = data.map(norm);
-      if (dbg) dbg.textContent = `Versión: ${APP_VERSION} — filas: ${DATA.length}`;
       populateFilters();
-      renderEmptyMessage();     // inicio vacío
-      attachListHandlers();     // engancha eventos
+      renderEmptyMessage();
+      attachListHandlers();
     },
-    error: (err)=>{
-      if (dbg) dbg.textContent = `Versión: ${APP_VERSION} — error cargando base`;
-      $("#results").innerHTML =
-        `<p style="color:red">⚠️ No se pudo cargar la base.</p>`;
-      console.error("PapaParse error:", err);
+    error: ()=>{
+      $("#results").innerHTML = `<p style="color:red">⚠️ No se pudo cargar la base.</p>`;
     }
   });
 }
 
-// =====================
-// LISTA
-// =====================
+// Lista
 function populateFilters(){
   fill("seccionFilter",  unique(DATA.map(i=>i.Seccion)));
   fill("ciudadFilter",   unique(DATA.map(i=>i.Ciudad)));
@@ -89,7 +73,6 @@ function fill(id, opts){
     o.value=v; o.textContent=v; sel.appendChild(o);
   });
 }
-
 function getFilters(){
   return {
     q  : $("#searchInput").value.toLowerCase().trim(),
@@ -98,17 +81,13 @@ function getFilters(){
     cat: $("#categoriaFilter").value
   };
 }
-
 function renderEmptyMessage(){
-  $("#results").innerHTML =
-    `<p style="color:#666">Escribe algo en <b>Buscar</b> o usa los filtros.</p>`;
+  $("#results").innerHTML = `<p style="color:#666">Escribe algo en <b>Buscar</b> o usa los filtros.</p>`;
 }
-
 function renderList(){
   const {q,sec,cdd,cat} = getFilters();
   const box = $("#results");
 
-  // **Candado: inicio vacío**
   const nothingSelected = !q && !sec && !cdd && !cat;
   if (START_EMPTY && nothingSelected){
     renderEmptyMessage();
@@ -125,7 +104,6 @@ function renderList(){
   });
 
   box.innerHTML = "";
-
   if (!list.length){
     box.innerHTML = `<p style="color:#666">No hay resultados.</p>`;
     return;
@@ -145,12 +123,10 @@ function renderList(){
     box.appendChild(card);
   });
 
-  attachDetailLinks(); // clic en “Ver más”
+  attachDetailLinks();
 }
 
-// =====================
-// DETALLE EN LA MISMA PÁGINA
-// =====================
+// Detalle
 function renderDetail(it){
   const box = $("#results");
   const imgs = pickImages(it);
@@ -161,23 +137,18 @@ function renderDetail(it){
       <h2>${it.Nombre||""}</h2>
       <div class="meta"><b>${it.Categoria||""}</b> — ${it.Ciudad||""}, Sección ${it.Seccion||""}</div>
       <p>${it.Descripcion||""}</p>
-
       <div class="gallery">
         ${imgs.map(src=>`<img src="${src}" alt="" onerror="this.style.display='none'">`).join("")}
       </div>
     </div>
   `;
-
-  // volver
   box.querySelector(".back").addEventListener("click",(e)=>{
     e.preventDefault();
     renderList();
   });
 }
 
-// =====================
-// EVENTOS
-// =====================
+// Eventos
 function attachListHandlers(){
   ["searchInput","seccionFilter","ciudadFilter","categoriaFilter"].forEach(id=>{
     const el = document.getElementById(id);
@@ -185,7 +156,6 @@ function attachListHandlers(){
     el.addEventListener(id==="searchInput"?"input":"change", renderList);
   });
 }
-
 function attachDetailLinks(){
   document.querySelectorAll('#results .btn[data-id]').forEach(a=>{
     a.addEventListener("click",(e)=>{
@@ -197,5 +167,5 @@ function attachDetailLinks(){
   });
 }
 
-// init
+// INIT
 loadData();
