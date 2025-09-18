@@ -1,39 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Comunidad SUTERM</title>
-
-  <!-- Enlace al CSS -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="wrap">
     <h1>Comunidad <span>SUTERM</span></h1>
     <p>Negocios de SUTERMISTAS para SUTERMISTAS, con la calidad y seguridad que mereces.</p>
 
-    <!-- Contenedor de filtros -->
+    <!-- Filtros -->
     <div class="filters">
-      <input type="text" id="search" placeholder="Buscar (Nombre o Descripción)">
-      <select id="filter-seccion">
+      <input type="text" id="searchInput" placeholder="Buscar (Nombre o Descripción)" />
+      <select id="seccionFilter">
         <option value="">Sección</option>
       </select>
-      <select id="filter-ciudad">
+      <select id="ciudadFilter">
         <option value="">Ciudad</option>
       </select>
-      <select id="filter-categoria">
+      <select id="categoriaFilter">
         <option value="">Categoría</option>
       </select>
     </div>
 
     <!-- Resultados -->
-    <div id="results">
-      Escribe algo en <b>Buscar</b> o elige <b>Sección/Ciudad/Categoría</b> para ver resultados.
-    </div>
+    <div id="results"></div>
   </div>
 
-  <!-- Enlace al JS -->
+  <!-- PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <!-- Tu JS -->
   <script src="script.js"></script>
 </body>
 </html>
