@@ -1,5 +1,5 @@
 // Google Sheet publicado en CSV
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1UEe7H53Sshc_xuHx-9JYMD8F6eECQg4czay-54cMQvM/edit?usp=sharing";
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1UEe7H53Sshc_xuHx-9JYMD8F6eECQg4czay-54cMQvM/edit?usp=drive_link";
 
 let DATA = [];
 let FILTERS = { q: "", seccion: "", ciudad: "", categoria: "" };
