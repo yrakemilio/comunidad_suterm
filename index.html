@@ -1,22 +1,39 @@
-<h1>Comunidad <span>SUTERM</span></h1>
-<p>Negocios de SUTERMISTAS para SUTERMISTAS, con la calidad y seguridad que mereces.</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comunidad SUTERM</title>
 
-<div class="filters">
-  <input type="text" placeholder="Buscar (Nombre o Descripción)">
-  <select>
-    <option value="">Sección</option>
-    <option value="149">Sección 149</option>
-  </select>
-  <select>
-    <option value="">Ciudad</option>
-    <option value="Cuernavaca">Cuernavaca</option>
-  </select>
-  <select>
-    <option value="">Categoría</option>
-    <option value="Servicios">Servicios</option>
-  </select>
-</div>
+  <!-- Enlace al CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <h1>Comunidad <span>SUTERM</span></h1>
+    <p>Negocios de SUTERMISTAS para SUTERMISTAS, con la calidad y seguridad que mereces.</p>
 
-<div id="results">
-  Escribe algo en <b>Buscar</b> o elige <b>Sección/Ciudad/Categoría</b> para ver resultados.
-</div>
+    <!-- Contenedor de filtros -->
+    <div class="filters">
+      <input type="text" id="search" placeholder="Buscar (Nombre o Descripción)">
+      <select id="filter-seccion">
+        <option value="">Sección</option>
+      </select>
+      <select id="filter-ciudad">
+        <option value="">Ciudad</option>
+      </select>
+      <select id="filter-categoria">
+        <option value="">Categoría</option>
+      </select>
+    </div>
+
+    <!-- Resultados -->
+    <div id="results">
+      Escribe algo en <b>Buscar</b> o elige <b>Sección/Ciudad/Categoría</b> para ver resultados.
+    </div>
+  </div>
+
+  <!-- Enlace al JS -->
+  <script src="script.js"></script>
+</body>
+</html>
