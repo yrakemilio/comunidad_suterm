@@ -21,7 +21,7 @@ function parseCSV(text){
 function renderCards(items){
   $("#results").innerHTML = items.map(it=>`
     <article class="card">
-      <img class="card-logo" src="${it.logo}" alt="Logo ${it.nombre}" onerror="this.style.display='none'">
+      ${it.logo ? `<img class="card-logo" src="${it.logo}" alt="Logo ${it.nombre}">` : ''}
       <div class="card-body">
         <h3 class="card-title">${it.nombre}</h3>
         <p class="card-meta">${[it.categoria,it.ciudad,it.seccion].filter(Boolean).join(" • ")}</p>
@@ -32,27 +32,20 @@ function renderCards(items){
   `).join("");
 }
 
-// ⚠️ NUEVA FUNCIÓN para poblar los filtros
-function populateFilters() {
-  const seccion = new Set();
-  const ciudad = new Set();
-  const categoria = new Set();
-  
-  DATA.forEach(item => {
-    if (item.seccion) seccion.add(item.seccion);
-    if (item.ciudad) ciudad.add(item.ciudad);
-    if (item.categoria) categoria.add(item.categoria);
-  });
-  
-  const renderOptions = (id, options) => {
-    const select = $(`#${id}`);
-    select.innerHTML = `<option value="">Todas</option>` +
-      Array.from(options).sort().map(opt => `<option value="${opt}">${opt}</option>`).join("");
+// ✅ NUEVA FUNCIÓN: Llenar dinámicamente los selectores de los filtros
+function populateFilters(){
+  const secciones = [...new Set(DATA.map(d=>d.seccion))].filter(Boolean);
+  const ciudades = [...new Set(DATA.map(d=>d.ciudad))].filter(Boolean);
+  const categorias = [...new Set(DATA.map(d=>d.categoria))].filter(Boolean);
+
+  const renderOptions = (items, id) => {
+    const selector = $(`#${id}`);
+    selector.innerHTML = `<option value="">Todas</option>` + items.map(item => `<option value="${item}">${item}</option>`).join("");
   };
-  
-  renderOptions("seccion", seccion);
-  renderOptions("ciudad", ciudad);
-  renderOptions("categoria", categoria);
+
+  renderOptions(secciones, "seccion");
+  renderOptions(ciudades, "ciudad");
+  renderOptions(categorias, "categoria");
 }
 
 function applyFilters(){
@@ -74,7 +67,7 @@ async function loadData(){
     const res = await fetch(SHEET_CSV_URL);
     const text = await res.text();
     DATA = parseCSV(text);
-    // ⚠️ Se llama a la nueva función aquí
+    // ✅ CORRECCIÓN: Llamamos a la nueva función para llenar los filtros después de cargar los datos
     populateFilters();
     $("#loading").classList.add("hidden");
     $("#empty").classList.remove("hidden");
