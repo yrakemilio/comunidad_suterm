@@ -8,14 +8,35 @@ let FILTERS = { q: "", seccion: "", ciudad: "", categoria: "" };
 const $ = (sel) => document.querySelector(sel);
 
 function parseCSV(text){
-  const lines = text.trim().split(/\r?\n/);
-  const headers = lines.shift().split(",").map(h=>h.trim().toLowerCase());
-  return lines.map(l=>{
-    const cells = l.split(",");
-    const obj={};
-    headers.forEach((h,i)=>obj[h]=cells[i]?.trim());
-    return obj;
-  });
+  const rows=[]; let row=[], cur='', inQ=false;
+  const pushCell=()=>{ row.push(cur); cur=''; };
+  const pushRow =()=>{ rows.push(row); row=[]; };
+
+  for (let i=0;i<text.length;i++){
+    const c=text[i];
+    if(c === '"'){
+      if(inQ && text[i+1] === '"'){ cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if(c === ',' && !inQ){
+      pushCell();
+    } else if((c === '\n' || c === '\r') && !inQ){
+      if(c==='\r' && text[i+1]==='\n') i++;
+      pushCell(); pushRow();
+    } else {
+      cur += c;
+    }
+  }
+  if(cur.length || row.length){ pushCell(); pushRow(); }
+
+  if(!rows.length) return [];
+  const headers = rows.shift().map(h => String(h||'').trim().toLowerCase());
+  return rows
+    .filter(r => r.some(c => String(c||'').trim()!==''))
+    .map(r => {
+      const o={};
+      headers.forEach((h,i)=> o[h]=String(r[i]||'').trim());
+      return o;
+    });
 }
 
 function renderCards(items){
