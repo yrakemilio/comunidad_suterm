@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Comunidad SUTERM — Directorio</title>
-  <!-- En CodePen no necesitas linkear CSS aquí, pero deja los hooks de clases/ids -->
+  <link rel="stylesheet" href="style.css">
+  <script src="index.js" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -15,80 +16,40 @@
   </header>
 
   <main class="container">
-    <!-- Barra de búsqueda -->
-    <section class="search-bar" aria-labelledby="lbl-buscar">
-      <label id="lbl-buscar" class="sr-only" for="q">Nombre o descripción</label>
+    <section class="search-bar">
       <div class="search-row">
-        <input id="q" name="q" type="search" placeholder="Buscar por nombre o descripción…" autocomplete="off" />
-        <button id="btnBuscar" type="button" aria-label="Buscar">Buscar</button>
+        <input id="q" type="search" placeholder="Buscar por nombre o descripción…" autocomplete="off" />
+        <button id="btnBuscar">Buscar</button>
       </div>
 
-      <!-- Filtros (debajo de la barra) -->
-      <div class="filters" id="filters">
+      <div class="filters">
         <div class="filter">
           <label for="seccion">Sección</label>
-          <select id="seccion" name="seccion">
-            <option value="">Todas</option>
-            <!-- Opciones dinámicas vía JS -->
-          </select>
+          <select id="seccion"><option value="">Todas</option></select>
         </div>
-
         <div class="filter">
           <label for="ciudad">Ciudad</label>
-          <select id="ciudad" name="ciudad">
-            <option value="">Todas</option>
-          </select>
+          <select id="ciudad"><option value="">Todas</option></select>
         </div>
-
         <div class="filter">
           <label for="categoria">Categoría</label>
-          <select id="categoria" name="categoria">
-            <option value="">Todas</option>
-          </select>
+          <select id="categoria"><option value="">Todas</option></select>
         </div>
       </div>
     </section>
 
-    <!-- Estado de carga / vacíos -->
     <section class="states" aria-live="polite">
       <div id="loading" class="hidden">Cargando…</div>
-      <div id="empty" class="muted">Empieza buscando o usando los filtros.</div>
-      <div id="noResults" class="hidden">No se encontraron resultados con esos criterios.</div>
-      <div id="error" class="hidden">Hubo un error al cargar los datos. Intenta de nuevo.</div>
+      <div id="empty">Empieza buscando o usando los filtros.</div>
+      <div id="noResults" class="hidden">No se encontraron resultados.</div>
+      <div id="error" class="hidden">Error al cargar los datos.</div>
     </section>
 
-    <!-- Resultados -->
-    <section class="results" id="results" aria-label="Resultados de la búsqueda">
-      <!-- Las tarjetas se inyectan aquí -->
-      <!-- Ejemplo de tarjeta (referencia):
-      <article class="card">
-        <img class="card-logo" alt="Logo Panadería La Esperanza" src="LOGO_URL" />
-        <div class="card-body">
-          <h3 class="card-title">Panadería La Esperanza</h3>
-          <p class="card-meta">Categoría • Ciudad • Sección</p>
-          <p class="card-desc">Descripción breve del negocio…</p>
-          <a class="card-link" href="detalle.html?id=ID_DEL_NEGOCIO">Ver más</a>
-        </div>
-      </article>
-      -->
-    </section>
+    <section class="results" id="results"></section>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <small>© Comunidad SUTERM</small>
-    </div>
+    <div class="container"><small>© Comunidad SUTERM</small></div>
   </footer>
-
-  <!-- Hooks para tu JS -->
-  <script>
-    /* 
-      Espera estos elementos por id en tu JS:
-      - q, btnBuscar, seccion, ciudad, categoria
-      - results, loading, empty, noResults, error
-      - Poblado de selects dinámicos desde Google Sheets.
-      - Render de tarjetas con link a detalle.html?id=ID
-    */
-  </script>
 </body>
 </html>
