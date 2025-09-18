@@ -1,33 +1,22 @@
-<!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>Comunidad SUTERM</title>
-  <link rel="stylesheet" href="./style.css">
+<h1>Comunidad <span>SUTERM</span></h1>
+<p>Negocios de SUTERMISTAS para SUTERMISTAS, con la calidad y seguridad que mereces.</p>
 
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<div class="wrap">
-  <h1> Comunidad <span class= "guinda"> SUTERM </span> </h1>
-  <p> Negocios de SUTERMISTAS para SUTERMISTAS, con la calidad y seguriad que mereces. </p>
-
-  <!-- Controles (se ocultan automáticamente en la ficha) -->
-  <div class="controls">
-    <input id="q" placeholder="🔎 Buscar (Nombre o Descripción)">
-    <select id="fSeccion"><option value="">Sección</option></select>
-    <select id="fCiudad"><option value="">Ciudad</option></select>
-    <select id="fCategoria"><option value="">Categoría</option></select>
-  </div>
-
-  <!-- Listado o Ficha -->
-  <div id="grid"></div>
+<div class="filters">
+  <input type="text" placeholder="Buscar (Nombre o Descripción)">
+  <select>
+    <option value="">Sección</option>
+    <option value="149">Sección 149</option>
+  </select>
+  <select>
+    <option value="">Ciudad</option>
+    <option value="Cuernavaca">Cuernavaca</option>
+  </select>
+  <select>
+    <option value="">Categoría</option>
+    <option value="Servicios">Servicios</option>
+  </select>
 </div>
 
-<!-- PapaParse (lector CSV) -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<!-- partial -->
-  <script  src="./script.js"></script>
-
-</body>
-</html>
+<div id="results">
+  Escribe algo en <b>Buscar</b> o elige <b>Sección/Ciudad/Categoría</b> para ver resultados.
+</div>
