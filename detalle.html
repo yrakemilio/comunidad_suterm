@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Comunidad SUTERM — Detalle</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="detalle.js" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -13,61 +15,38 @@
     </div>
   </header>
 
-  <main class="container" id="detailRoot" aria-live="polite">
-    <!-- Estado de carga / error -->
+  <main class="container">
     <div id="detailLoading">Cargando…</div>
     <div id="detailError" class="hidden">No se pudo cargar el negocio.</div>
 
-    <!-- Contenido del negocio -->
     <article id="detail" class="hidden">
       <header class="detail-header">
-        <img id="detailLogo" class="detail-logo" alt="Logo del negocio" src="" />
+        <img id="detailLogo" class="detail-logo" alt="Logo del negocio" />
         <div>
-          <h2 id="detailName" class="detail-name">Nombre del negocio</h2>
-          <p id="detailMeta" class="detail-meta">Categoría • Ciudad • Sección</p>
+          <h2 id="detailName" class="detail-name"></h2>
+          <p id="detailMeta" class="detail-meta"></p>
         </div>
       </header>
 
       <section class="detail-description">
         <h3>Descripción</h3>
-        <p id="detailDesc">Aquí va la descripción más completa del negocio…</p>
+        <p id="detailDesc"></p>
       </section>
 
-      <section class="detail-gallery" aria-label="Galería de imágenes">
+      <section class="detail-gallery">
         <h3>Galería</h3>
-        <div class="gallery" id="detailGallery">
-          <!-- Se insertan hasta 5 imágenes si existen -->
-        </div>
+        <div class="gallery" id="detailGallery"></div>
       </section>
 
       <section class="detail-actions">
-        <a id="btnWhatsApp" class="btn" href="#" target="_blank" rel="noopener">Contactar por WhatsApp</a>
-        <a id="btnWeb" class="btn outline" href="#" target="_blank" rel="noopener">Visitar página</a>
+        <a id="btnWhatsApp" class="btn" href="#" target="_blank">WhatsApp</a>
+        <a id="btnWeb" class="btn outline" href="#" target="_blank">Página web</a>
       </section>
-
-      <nav class="detail-nav">
-        <a class="btn ghost" href="index.html">Volver</a>
-      </nav>
     </article>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <small>© Comunidad SUTERM</small>
-    </div>
+    <div class="container"><small>© Comunidad SUTERM</small></div>
   </footer>
-
-  <!-- Hooks para tu JS -->
-  <script>
-    /*
-      Tu JS debe:
-      - Leer el parámetro ?id= de la URL.
-      - Traer el registro correspondiente desde Google Sheets.
-      - Completar: detailLogo.src/alt, detailName, detailMeta, detailDesc.
-      - Construir la galería con imagen1..imagen5 si existen.
-      - Setear href de btnWhatsApp (link completo) y btnWeb.
-      - Mostrar #detail y ocultar #detailLoading.
-    */
-  </script>
 </body>
 </html>
