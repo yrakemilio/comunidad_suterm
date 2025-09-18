@@ -1,77 +1,29 @@
-/* Reset */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comunidad SUTERM</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <h1>Comunidad <span class="guinda">SUTERM</span></h1>
+    <p>Negocios de SUTERMISTAS para SUTERMISTAS, con la calidad y seguridad que mereces.</p>
 
-html, body {
-  height: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f9f9f9;
-  color: #333;
-}
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Buscar (Nombre o Descripción)" />
+      <select id="seccionFilter"><option value="">Sección</option></select>
+      <select id="ciudadFilter"><option value="">Ciudad</option></select>
+      <select id="categoriaFilter"><option value="">Categoría</option></select>
+    </div>
 
-/* Header */
-h1 {
-  font-size: 2rem;
-  margin-bottom: 0.3em;
-  text-align: center;
-}
-h1 span {
-  color: #800020; /* guinda */
-}
-p {
-  text-align: center;
-  color: #666;
-  margin-bottom: 1.5em;
-}
+    <div id="results"></div>
+  </div>
 
-/* Contenedor de filtros */
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-/* Buscador */
-.filters input[type="text"] {
-  flex: 1;
-  min-width: 200px;
-  padding: 10px 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 0.95rem;
-}
-
-/* Selects */
-.filters select {
-  padding: 10px 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  background: white;
-}
-
-/* Mensaje vacío */
-#results {
-  text-align: center;
-  color: #888;
-  padding: 20px;
-  font-size: 0.95rem;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filters input,
-  .filters select {
-    width: 100%;
-  }
-}
+  <!-- PapaParse primero -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <!-- Tu JS de la LISTA -->
+  <script src="script.js"></script>
+</body>
+</html>
