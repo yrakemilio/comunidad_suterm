@@ -1,118 +1,137 @@
 // =====================
-// CONFIGURACIÓN
+// CONFIG
 // =====================
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTBaU4l9D25rUcPCyLnn_6mDe8_hRRQHG1GLf2QqW708j0W8lmVj10Z6oLK0jh9nPKcXk7Y_VSuRj/pub?gid=0&single=true&output=csv";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTBAuMdD25rU-PCyLnn_6nOeb_NHRQtOHglGFL2QqMN7BD98JmWvJ1O2o6LkOjhwP0KCxYzTY_V3u9R/pub?gid=0&single=true&output=csv";
+const SHOW_ALL_BY_DEFAULT = true; // muestra todo al inicio
 
-// Si quieres mostrar todos los negocios al inicio = true
-// Si quieres que aparezcan solo cuando buscan = false
-const SHOW_ALL_BY_DEFAULT = true;
-
-// Estado
 let DATA = [];
 
 // =====================
-// FUNCIONES
+// HELPERS
 // =====================
+function normKeys(row) {
+  const out = {};
+  Object.keys(row).forEach(k => {
+    const nk = String(k || "").trim();
+    out[nk] = String(row[k] ?? "").trim();
+  });
+  return out;
+}
 
-// Cargar la base desde Google Sheets
+// Prioridad de imagen:
+// 1) URL del Sheet (Logo1 / Logo / logo)
+// 2) Carpeta por Id en GitHub: imagenes/{Id}/logo.png
+// 3) Placeholder
+function pickLogo(item) {
+  const fromSheet =
+    item.Logo1 || item.Logo || item.logo || "";
+  if (fromSheet) return fromSheet;
+  if (item.Id) return `imagenes/${item.Id}/logo.png`;
+  return "https://via.placeholder.com/600x400?text=Sin+imagen";
+}
+
+// =====================
+// CARGA DE DATOS
+// =====================
 function loadData() {
   Papa.parse(CSV_URL, {
     download: true,
     header: true,
-    complete: function (results) {
-      DATA = results.data;
+    skipEmptyLines: true,
+    complete: ({ data }) => {
+      DATA = data.map(normKeys);
       populateFilters();
       renderResults();
     },
-    error: function () {
+    error: (err) => {
+      console.error(err);
       document.getElementById("results").innerHTML =
         `<p style="color:red">⚠️ No se pudo cargar la base.</p>`;
     }
   });
 }
 
-// Llenar selects dinámicamente
+// =====================
+// FILTROS DINÁMICOS
+// =====================
+function unique(list) {
+  return [...new Set(list.filter(Boolean))].sort();
+}
+
 function populateFilters() {
-  fillSelect("seccionFilter", [...new Set(DATA.map(item => item.Seccion).filter(Boolean))]);
-  fillSelect("ciudadFilter", [...new Set(DATA.map(item => item.Ciudad).filter(Boolean))]);
-  fillSelect("categoriaFilter", [...new Set(DATA.map(item => item.Categoria).filter(Boolean))]);
+  fillSelect("seccionFilter", unique(DATA.map(i => i.Seccion)));
+  fillSelect("ciudadFilter", unique(DATA.map(i => i.Ciudad)));
+  fillSelect("categoriaFilter", unique(DATA.map(i => i.Categoria)));
 }
 
 function fillSelect(id, options) {
-  const select = document.getElementById(id);
-  options.sort().forEach(opt => {
-    const option = document.createElement("option");
-    option.value = opt;
-    option.textContent = opt;
-    select.appendChild(option);
+  const sel = document.getElementById(id);
+  options.forEach(v => {
+    const opt = document.createElement("option");
+    opt.value = v;
+    opt.textContent = v;
+    sel.appendChild(opt);
   });
 }
 
-// Renderizar resultados
+// =====================
+// RENDER RESULTADOS
+// =====================
 function renderResults() {
-  const query = document.getElementById("searchInput").value.toLowerCase();
-  const seccion = document.getElementById("seccionFilter").value;
-  const ciudad = document.getElementById("ciudadFilter").value;
-  const categoria = document.getElementById("categoriaFilter").value;
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  const sec = document.getElementById("seccionFilter").value;
+  const cdd = document.getElementById("ciudadFilter").value;
+  const cat = document.getElementById("categoriaFilter").value;
 
-  const resultsContainer = document.getElementById("results");
-  resultsContainer.innerHTML = "";
-
-  let filtered = DATA.filter(item => {
-    const matchesQuery =
-      item.Nombre?.toLowerCase().includes(query) ||
-      item.Descripcion?.toLowerCase().includes(query);
-    const matchesSeccion = seccion ? item.Seccion === seccion : true;
-    const matchesCiudad = ciudad ? item.Ciudad === ciudad : true;
-    const matchesCategoria = categoria ? item.Categoria === categoria : true;
-    return matchesQuery && matchesSeccion && matchesCiudad && matchesCategoria;
+  let list = DATA.filter(it => {
+    const matchQ = !q ||
+      (it.Nombre && it.Nombre.toLowerCase().includes(q)) ||
+      (it.Descripcion && it.Descripcion.toLowerCase().includes(q));
+    const matchS = !sec || it.Seccion === sec;
+    const matchC = !cdd || it.Ciudad === cdd;
+    const matchCat = !cat || it.Categoria === cat;
+    return matchQ && matchS && matchC && matchCat;
   });
 
-  if (!SHOW_ALL_BY_DEFAULT && !query && !seccion && !ciudad && !categoria) {
-    resultsContainer.innerHTML =
-      `<p style="color:gray">Escribe algo en <b>Buscar</b> o elige <b>Sección/Ciudad/Categoría</b> para ver resultados.</p>`;
+  const box = document.getElementById("results");
+  box.innerHTML = "";
+
+  if (!SHOW_ALL_BY_DEFAULT && !q && !sec && !cdd && !cat) {
+    box.innerHTML = `<p style="color:#666">Escribe algo en <b>Buscar</b> o elige <b>Sección/Ciudad/Categoría</b> para ver resultados.</p>`;
     return;
   }
 
-  if (filtered.length === 0) {
-    resultsContainer.innerHTML =
-      `<p style="color:gray">⚠️ No se encontraron resultados.</p>`;
+  if (list.length === 0) {
+    box.innerHTML = `<p style="color:#666">No hay resultados.</p>`;
     return;
   }
 
-  filtered.forEach(item => {
-    // Construcción de ruta de imagen:
-    // Se asume que en tu Google Sheet hay un campo "Carpeta" (ejemplo: cleanpisimo)
-    // y que en GitHub tienes /imagenes/<Carpeta>/logo.png
-    let imgPath = "";
-    if (item.Carpeta) {
-      imgPath = `imagenes/${item.Carpeta}/logo.png`;
-    }
-
+  list.forEach(it => {
     const card = document.createElement("div");
     card.className = "card";
 
-    card.innerHTML = `
-      ${imgPath ? `<img src="${imgPath}" alt="logo" class="logo">` : ""}
-      <h2>${item.Nombre}</h2>
-      <p><b>${item.Categoria}</b> - ${item.Ciudad}, Sección ${item.Seccion}</p>
-      <p>${item.Descripcion || ""}</p>
-      <a href="#">Ver más</a>
-    `;
+    const logo = pickLogo(it);
 
-    resultsContainer.appendChild(card);
+    card.innerHTML = `
+      <img src="${logo}" alt="logo ${it.Nombre || ''}"
+           onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400?text=Sin+imagen'">
+      <h3>${it.Nombre || ""}</h3>
+      <p><b>${it.Categoria || ""}</b> - ${it.Ciudad || ""}, Sección ${it.Seccion || ""}</p>
+      <p>${it.Descripcion || ""}</p>
+      ${it.link_pagina ? `<a class="btn" target="_blank" rel="noopener" href="${it.link_pagina}">Ver más</a>` : ``}
+    `;
+    box.appendChild(card);
   });
 }
 
 // =====================
 // EVENTOS
 // =====================
-document.getElementById("searchInput").addEventListener("input", renderResults);
-document.getElementById("seccionFilter").addEventListener("change", renderResults);
-document.getElementById("ciudadFilter").addEventListener("change", renderResults);
-document.getElementById("categoriaFilter").addEventListener("change", renderResults);
+["searchInput","seccionFilter","ciudadFilter","categoriaFilter"].forEach(id => {
+  document.getElementById(id).addEventListener(id==="searchInput"?"input":"change", renderResults);
+});
 
 // =====================
-// INICIO
+// INIT
 // =====================
 loadData();
