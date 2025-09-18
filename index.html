@@ -8,32 +8,22 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>Comunidad <span>SUTERM</span></h1>
+    <h1>Comunidad <span class="guinda">SUTERM</span></h1>
     <p>Negocios de SUTERMISTAS para SUTERMISTAS, con la calidad y seguridad que mereces.</p>
 
-    <!-- Filtros -->
     <div class="filters">
       <input type="text" id="searchInput" placeholder="Buscar (Nombre o Descripción)" />
-      <select id="seccionFilter">
-        <option value="">Sección</option>
-      </select>
-      <select id="ciudadFilter">
-        <option value="">Ciudad</option>
-      </select>
-      <select id="categoriaFilter">
-        <option value="">Categoría</option>
-      </select>
+      <select id="seccionFilter"><option value="">Sección</option></select>
+      <select id="ciudadFilter"><option value="">Ciudad</option></select>
+      <select id="categoriaFilter"><option value="">Categoría</option></select>
     </div>
 
-    <!-- Resultados -->
     <div id="results"></div>
   </div>
 
-  <!-- PapaParse -->
+  <!-- PapaParse primero -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <!-- Tu JS -->
+  <!-- Tu JS de la LISTA -->
   <script src="script.js"></script>
 </body>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="script.js"></script>
 </html>
