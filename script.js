@@ -1,6 +1,4 @@
-// =====================
-// CONFIG
-// =====================
+// === CONFIG ===
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTBAuMdD25rU-PCyLnn_6nOeb_NHRQtOHglGFL2QqMN7BD98JmWvJ1O2o6LkOjhwP0KCxYzTY_V3u9R/pub?gid=0&single=true&output=csv";
 const SHOW_ALL_BY_DEFAULT = true;
 
@@ -16,7 +14,7 @@ function norm(row){
   return out;
 }
 
-// Imagen de tarjeta (prioridad: Logo1/Logo/logo -> carpeta/Id -> placeholder)
+// Prioridad imagen: del Sheet (Logo1/Logo/logo) -> carpeta por Id -> placeholder
 function pickLogo(item){
   const fromSheet = item.Logo1 || item.Logo || item.logo;
   if (fromSheet) return fromSheet;
@@ -24,7 +22,7 @@ function pickLogo(item){
   return "https://via.placeholder.com/600x400?text=Sin+imagen";
 }
 
-// Cargar CSV con PapaParse (maneja comas en Descripción)
+// Cargar datos
 function loadData(){
   Papa.parse(CSV_URL, {
     download: true,
@@ -43,21 +41,17 @@ function loadData(){
   });
 }
 
-function unique(arr){ return [...new Set(arr.filter(Boolean))].sort(); }
+function unique(a){ return [...new Set(a.filter(Boolean))].sort(); }
 
 function populateFilters(){
-  fillSelect("seccionFilter", unique(DATA.map(i=>i.Seccion)));
-  fillSelect("ciudadFilter",  unique(DATA.map(i=>i.Ciudad)));
-  fillSelect("categoriaFilter",unique(DATA.map(i=>i.Categoria)));
+  fill("seccionFilter",  unique(DATA.map(i=>i.Seccion)));
+  fill("ciudadFilter",   unique(DATA.map(i=>i.Ciudad)));
+  fill("categoriaFilter",unique(DATA.map(i=>i.Categoria)));
 }
-
-function fillSelect(id, options){
+function fill(id, options){
   const sel = document.getElementById(id);
   options.forEach(v=>{
-    const o = document.createElement("option");
-    o.value = v;
-    o.textContent = v;
-    sel.appendChild(o);
+    const o=document.createElement("option"); o.value=v; o.textContent=v; sel.appendChild(o);
   });
 }
 
@@ -95,7 +89,7 @@ function renderResults(){
 
     card.innerHTML = `
       <img src="${logo}" alt="logo ${it.Nombre||''}"
-        onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400?text=Sin+imagen'">
+           onerror="this.onerror=null;this.src='https://via.placeholder.com/600x400?text=Sin+imagen'">
       <h3>${it.Nombre||""}</h3>
       <p><b>${it.Categoria||""}</b> - ${it.Ciudad||""}, Sección ${it.Seccion||""}</p>
       <p>${it.Descripcion||""}</p>
@@ -110,5 +104,5 @@ function renderResults(){
   document.getElementById(id).addEventListener(id==="searchInput"?"input":"change", renderResults);
 });
 
-// init
+// iniciar
 loadData();
