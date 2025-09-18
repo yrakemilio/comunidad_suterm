@@ -4,14 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Comunidad SUTERM</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=9" />
 </head>
 <body>
   <div class="wrap">
     <h1>Comunidad <span class="guinda">SUTERM</span></h1>
     <p>Negocios de SUTERMISTAS para SUTERMISTAS, con la calidad y seguridad que mereces.</p>
 
-    <!-- Buscador + Filtros -->
     <div class="filters">
       <input type="text" id="searchInput" placeholder="Buscar (Nombre o Descripción)" />
       <select id="seccionFilter"><option value="">Sección</option></select>
@@ -19,12 +18,14 @@
       <select id="categoriaFilter"><option value="">Categoría</option></select>
     </div>
 
-    <!-- Resultados / Detalle -->
+    <!-- Mensajes / resultados / detalle -->
     <div id="results"></div>
+    <div id="debug" style="margin-top:8px;color:#888;font-size:12px"></div>
   </div>
 
-  <!-- PapaParse primero, luego tu JS -->
+  <!-- PapaParse primero -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="script.js"></script>
+  <!-- Tu JS con cache-busting -->
+  <script src="script.js?v=9"></script>
 </body>
 </html>
