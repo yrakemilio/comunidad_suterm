@@ -32,6 +32,29 @@ function renderCards(items){
   `).join("");
 }
 
+// ⚠️ NUEVA FUNCIÓN para poblar los filtros
+function populateFilters() {
+  const seccion = new Set();
+  const ciudad = new Set();
+  const categoria = new Set();
+  
+  DATA.forEach(item => {
+    if (item.seccion) seccion.add(item.seccion);
+    if (item.ciudad) ciudad.add(item.ciudad);
+    if (item.categoria) categoria.add(item.categoria);
+  });
+  
+  const renderOptions = (id, options) => {
+    const select = $(`#${id}`);
+    select.innerHTML = `<option value="">Todas</option>` +
+      Array.from(options).sort().map(opt => `<option value="${opt}">${opt}</option>`).join("");
+  };
+  
+  renderOptions("seccion", seccion);
+  renderOptions("ciudad", ciudad);
+  renderOptions("categoria", categoria);
+}
+
 function applyFilters(){
   const q = FILTERS.q.toLowerCase();
   let list = DATA.filter(r=>{
@@ -51,6 +74,8 @@ async function loadData(){
     const res = await fetch(SHEET_CSV_URL);
     const text = await res.text();
     DATA = parseCSV(text);
+    // ⚠️ Se llama a la nueva función aquí
+    populateFilters();
     $("#loading").classList.add("hidden");
     $("#empty").classList.remove("hidden");
   }catch(e){
