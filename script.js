@@ -1,16 +1,17 @@
 // =====================
-// CONFIG
+// VERSION + CONFIG
 // =====================
+const APP_VERSION = "empty-v9"; // se muestra en pantalla para verificar carga
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTBAuMdD25rU-PCyLnn_6nOeb_NHRQtOHglGFL2QqMN7BD98JmWvJ1O2o6LkOjhwP0KCxYzTY_V3u9R/pub?gid=0&single=true&output=csv";
 
-// Arrancar VACÍO (no mostrar tarjetas hasta buscar/filtrar)
+// Arrancar SIEMPRE vacío
 const START_EMPTY = true;
 
 let DATA = [];
 
-// =====================
-// HELPERS
-// =====================
+// utilidades
+const $ = (s) => document.querySelector(s);
+const unique = (a)=>[...new Set(a.filter(Boolean))].sort();
 function norm(row){
   const out = {};
   Object.keys(row).forEach(k=>{
@@ -19,17 +20,16 @@ function norm(row){
   });
   return out;
 }
-const unique = (a)=>[...new Set(a.filter(Boolean))].sort();
 
+// imagen de tarjeta (prioridad: sheet -> carpeta/Id -> placeholder)
 function pickLogo(it){
-  // Prioridad: URL en Sheet (Logo1/Logo/logo) -> carpeta por Id -> placeholder
   const fromSheet = it.Logo1 || it.Logo || it.logo;
   if (fromSheet) return fromSheet;
   if (it.Id) return `imagenes/${it.Id}/logo.png`;
   return "https://via.placeholder.com/600x400?text=Sin+imagen";
 }
 
-// Galería: Logo1/Imagen1..3; si faltan, intenta /imagenes/{Id}/imagenX.jpg
+// galería: logo + Imagen1..3; si faltan, intenta /imagenes/{Id}/imagenX.jpg
 function pickImages(it){
   const id = it.Id || "";
   const imgs = [];
@@ -50,25 +50,32 @@ function pickImages(it){
 // CARGA CSV
 // =====================
 function loadData(){
+  // muestra versión para confirmar que cargó este JS
+  const dbg = $("#debug");
+  if (dbg) dbg.textContent = `Versión: ${APP_VERSION} — cargando base…`;
+
   Papa.parse(CSV_URL, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: ({data})=>{
       DATA = data.map(norm);
+      if (dbg) dbg.textContent = `Versión: ${APP_VERSION} — filas: ${DATA.length}`;
       populateFilters();
       renderEmptyMessage();     // inicio vacío
-      attachListHandlers();     // engancha eventos de filtros/buscador
+      attachListHandlers();     // engancha eventos
     },
-    error: ()=>{
-      document.getElementById("results").innerHTML =
+    error: (err)=>{
+      if (dbg) dbg.textContent = `Versión: ${APP_VERSION} — error cargando base`;
+      $("#results").innerHTML =
         `<p style="color:red">⚠️ No se pudo cargar la base.</p>`;
+      console.error("PapaParse error:", err);
     }
   });
 }
 
 // =====================
-// LISTA (INDEX)
+// LISTA
 // =====================
 function populateFilters(){
   fill("seccionFilter",  unique(DATA.map(i=>i.Seccion)));
@@ -85,22 +92,23 @@ function fill(id, opts){
 
 function getFilters(){
   return {
-    q  : document.getElementById("searchInput").value.toLowerCase().trim(),
-    sec: document.getElementById("seccionFilter").value,
-    cdd: document.getElementById("ciudadFilter").value,
-    cat: document.getElementById("categoriaFilter").value
+    q  : $("#searchInput").value.toLowerCase().trim(),
+    sec: $("#seccionFilter").value,
+    cdd: $("#ciudadFilter").value,
+    cat: $("#categoriaFilter").value
   };
 }
 
 function renderEmptyMessage(){
-  document.getElementById("results").innerHTML =
+  $("#results").innerHTML =
     `<p style="color:#666">Escribe algo en <b>Buscar</b> o usa los filtros.</p>`;
 }
 
 function renderList(){
-  const box = document.getElementById("results");
   const {q,sec,cdd,cat} = getFilters();
+  const box = $("#results");
 
+  // **Candado: inicio vacío**
   const nothingSelected = !q && !sec && !cdd && !cat;
   if (START_EMPTY && nothingSelected){
     renderEmptyMessage();
@@ -144,7 +152,7 @@ function renderList(){
 // DETALLE EN LA MISMA PÁGINA
 // =====================
 function renderDetail(it){
-  const box = document.getElementById("results");
+  const box = $("#results");
   const imgs = pickImages(it);
 
   box.innerHTML = `
@@ -160,7 +168,7 @@ function renderDetail(it){
     </div>
   `;
 
-  // volver a la lista
+  // volver
   box.querySelector(".back").addEventListener("click",(e)=>{
     e.preventDefault();
     renderList();
@@ -171,7 +179,6 @@ function renderDetail(it){
 // EVENTOS
 // =====================
 function attachListHandlers(){
-  // cuando cambien buscador o filtros → pintar lista
   ["searchInput","seccionFilter","ciudadFilter","categoriaFilter"].forEach(id=>{
     const el = document.getElementById(id);
     if (!el) return;
@@ -190,7 +197,5 @@ function attachDetailLinks(){
   });
 }
 
-// =====================
-// INIT
-// =====================
+// init
 loadData();
